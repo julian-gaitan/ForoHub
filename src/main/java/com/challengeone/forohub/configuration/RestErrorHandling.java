@@ -1,5 +1,7 @@
 package com.challengeone.forohub.configuration;
 
+import org.springframework.core.NestedExceptionUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,6 +17,13 @@ public class RestErrorHandling {
     public ResponseEntity<List<DataErrorValidation>> validationError(MethodArgumentNotValidException ex) {
         var errors = ex.getFieldErrors().stream().map(DataErrorValidation::new).toList();
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<?> conflict(DataIntegrityViolationException ex) {
+        String message = NestedExceptionUtils.getMostSpecificCause(ex).getMessage();
+        DataErrorValidation error = new DataErrorValidation(ex.getClass().getSimpleName(), message);
+        return ResponseEntity.badRequest().body(error);
     }
 
     public record DataErrorValidation(
