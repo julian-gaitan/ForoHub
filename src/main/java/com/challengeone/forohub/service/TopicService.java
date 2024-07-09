@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class TopicService {
 
@@ -28,5 +30,13 @@ public class TopicService {
 
     public TopicEntity getById(Long id) {
         return repository.getReferenceById(id);
+    }
+
+    public Optional<TopicEntity> checkById(Long id) {
+        return repository.findById(id);
+    }
+
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 }

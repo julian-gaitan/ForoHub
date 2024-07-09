@@ -5,6 +5,7 @@ import com.challengeone.forohub.dto.DataResponseTopic;
 import com.challengeone.forohub.dto.DataUpdateTopic;
 import com.challengeone.forohub.entity.TopicEntity;
 import com.challengeone.forohub.service.TopicService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/topic")
@@ -50,5 +52,16 @@ public class TopicController {
         topic.updateData(updateTopic);
         DataResponseTopic responseTopic = new DataResponseTopic(topicService.save(topic));
         return ResponseEntity.ok(responseTopic);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteTopic(@PathVariable Long id) {
+        Optional<TopicEntity> topic = topicService.checkById(id);
+        if (topic.isPresent()) {
+            topicService.deleteById(topic.get().getId());
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
