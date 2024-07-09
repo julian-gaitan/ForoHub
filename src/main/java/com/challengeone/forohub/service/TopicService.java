@@ -18,6 +18,10 @@ public class TopicService {
         return repository.save(new TopicEntity(requestTopic));
     }
 
+    public TopicEntity save(TopicEntity topic) {
+        return repository.save(topic);
+    }
+
     public Page<TopicEntity> findAll(Pageable page) {
         return repository.findAll(page);
     }

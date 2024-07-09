@@ -1,6 +1,7 @@
 package com.challengeone.forohub.entity;
 
 import com.challengeone.forohub.dto.DataRequestTopic;
+import com.challengeone.forohub.dto.DataUpdateTopic;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -31,4 +32,12 @@ public class TopicEntity {
         this.creationDate = requestTopic.creationDate();
     }
 
+    public void updateData(DataUpdateTopic updateTopic) {
+        if (updateTopic.title() != null) {
+            this.title = updateTopic.title();
+        }
+        if (updateTopic.message() != null) {
+            this.message = updateTopic.message();
+        }
+    }
 }
