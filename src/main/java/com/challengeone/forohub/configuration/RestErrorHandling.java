@@ -1,5 +1,6 @@
 package com.challengeone.forohub.configuration;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,11 @@ public class RestErrorHandling {
         String message = NestedExceptionUtils.getMostSpecificCause(ex).getMessage();
         DataErrorValidation error = new DataErrorValidation(ex.getClass().getSimpleName(), message);
         return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<DataErrorValidation> notFound(EntityNotFoundException ex) {
+        return ResponseEntity.notFound().build();
     }
 
     public record DataErrorValidation(
