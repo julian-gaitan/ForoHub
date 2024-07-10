@@ -1,6 +1,9 @@
 package com.challengeone.forohub.controller;
 
+import com.challengeone.forohub.dto.DataJWT;
 import com.challengeone.forohub.dto.DataRequestUser;
+import com.challengeone.forohub.entity.UserEntity;
+import com.challengeone.forohub.service.JWTService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +22,15 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private JWTService JWTService;
+
     @PostMapping
     public ResponseEntity<?> authentication(@RequestBody @Valid DataRequestUser userAndPass) {
-        Authentication token = new UsernamePasswordAuthenticationToken(userAndPass.username(), userAndPass.password());
-//        System.out.println(token);
-        authenticationManager.authenticate(token);
-        return ResponseEntity.ok().build();
+        Authentication auth = new UsernamePasswordAuthenticationToken(userAndPass.username(), userAndPass.password());
+//        System.out.println(auth);
+        var result = authenticationManager.authenticate(auth);
+        String token = JWTService.generateToken((UserEntity) result.getPrincipal());
+        return ResponseEntity.ok(new DataJWT(token));
     }
 }
